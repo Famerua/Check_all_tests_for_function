@@ -1,30 +1,43 @@
-class Xrange:
-    def __init__(self, start, end, step=1):
-        self.start = float(start) if isinstance(step, float) else start
-        self.end = float(end) if isinstance(step, float) else end
-        self.step = step
+class Matrix:
+    def __init__(self, rows, cols, value=0, matrix=None):
+        self.rows = rows
+        self.cols = cols
+        self.value = value
+        if matrix is None:
+            self.martrix = [[value]*cols for _ in range(rows)]
+        else:
+            self.martrix = matrix
 
-    def __iter__(self):
-        return self
+    def get_value(self, rows, cols):
+        return self.martrix[rows][cols]
 
-    def __next__(self):
-        if self.step > 0:
-            if self.start >= self.end:
-                raise StopIteration
-        else: 
-            if self.start <= self.end:
-                raise StopIteration
-        val = self.start
-        self.start += self.step
-        return val
-xrange = Xrange(5, 1, -1)
+    def set_value(self, rows, cols, value):
+        self.martrix[rows][cols] = value
 
-next(xrange)
-next(xrange)
-next(xrange)
-next(xrange)
+    def __repr__(self):
+        return f"Matrix({self.rows}, {self.cols})"
 
-try:
-    next(xrange)
-except StopIteration:
-    print('Error')
+    def __str__(self):
+        return '\n'.join([' '.join(map(str, i)) for i in self.martrix])
+
+    def __pos__(self):
+        return Matrix(*self.__dict__.values())
+
+    def __neg__(self):
+        return Matrix(self.rows, self.cols, matrix=[[-i for i in j]for j in self.martrix])
+
+    def __invert__(self):
+        return Matrix(self.cols, self.rows, matrix=[i for i in zip(*self.martrix)])
+
+    def __round__(self, n=None):
+        return Matrix(self.rows, self.cols, matrix=[[round(i, n) for i in j]for j in self.martrix])
+
+matrix = Matrix(2, 3, 1)
+
+plus_matrix = +matrix
+minus_matrix = -matrix
+invert_matrix = ~matrix
+
+print(plus_matrix.cols, plus_matrix.rows)
+print(minus_matrix.cols, minus_matrix.rows)
+print(invert_matrix.cols, invert_matrix.rows)
